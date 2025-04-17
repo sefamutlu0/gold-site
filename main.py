@@ -31,19 +31,6 @@ def update_html():
         dolar_son = dolar_listesi[-1]
         dolar_fiyat = round(float(dolar_son["acilis"]), 2)
 
-        '''
-        # --- SOL verisi (CoinMarketCap) ---
-        sol_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
-        sol_params = {"symbol": "SOL", "convert": "USD"}
-        sol_headers = {
-            "Accepts": "application/json",
-            "X-CMC_PRO_API_KEY": "547c960c-9148-4e73-93dd-90eecc17cdcc"
-        }
-        sol_response = requests.get(sol_url, headers=sol_headers, params=sol_params)
-        sol_data = sol_response.json()
-        sol_fiyat = round(sol_data["data"]["SOL"]["quote"]["USD"]["price"], 2)
-        '''
-
         crypto_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
         headers = {
             "Accepts": "application/json",
@@ -124,8 +111,8 @@ def update_html():
                 <div class="card shadow-lg rounded-4 mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/awXKORw.png" alt="Sol" class="icon">
-                            <h1 class="price mb-0">{sol_fiyat} $</h1>
+                            <img src="https://i.imgur.com/6bqao1V.png" alt="Ada" class="icon">
+                            <h1 class="price mb-0">{ada_fiyat} $</h1>
                         </div>
                     </div>
                 </div>
@@ -133,8 +120,8 @@ def update_html():
                 <div class="card shadow-lg rounded-4 mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/6bqao1V.png" alt="Ada" class="icon">
-                            <h1 class="price mb-0">{ada_fiyat} $</h1>
+                            <img src="https://i.imgur.com/awXKORw.png" alt="Sol" class="icon">
+                            <h1 class="price mb-0">{sol_fiyat} $</h1>
                         </div>
                     </div>
                 </div>
