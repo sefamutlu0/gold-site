@@ -115,7 +115,7 @@ def update_html():
                 <div class="card shadow-lg rounded-4 mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/RSHC4Hz.png" alt="Dolar" class="icon">
+                            <img src="https://i.imgur.com/FQCD10d.png" alt="Dolar" class="icon">
                             <h1 class="price mb-0">{dolar_fiyat} ₺</h1>
                         </div>
                     </div>
