@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import requests
 from ftplib import FTP
 from datetime import datetime, timedelta, timezone
@@ -31,6 +31,7 @@ def update_html():
         dolar_son = dolar_listesi[-1]
         dolar_fiyat = round(float(dolar_son["acilis"]), 2)
 
+        # --- Kripto verisi ---
         crypto_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
         headers = {
             "Accepts": "application/json",
@@ -49,100 +50,20 @@ def update_html():
         sol_fiyat = round(data["data"]["SOL"]["quote"]["USD"]["price"], 2)
         xrp_fiyat = round(data["data"]["XRP"]["quote"]["USD"]["price"], 2)
 
-
         # --- Güncelleme zamanı (GMT+3) ---
         turkiye_saati = datetime.now(timezone.utc) + timedelta(hours=3)
-        simdi = turkiye_saati.strftime("%d-%m-%Y %H:%M:%S")
+        simdi = turkiye_saati.strftime("%Y-%m-%d %H:%M:%S")
 
-        # --- HTML ---
-        html = f"""
-        <!DOCTYPE html>
-        <html lang="tr">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Memooooooo</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-            <style>
-                .icon {{
-                    width: 64px;
-                    height: 64px;
-                    object-fit: contain;
-                    margin-right: 12px;
-                }}
-                .card-title {{
-                    font-size: 1.5rem;
-                }}
-                .price {{
-                    font-size: 2.5rem;
-                }}
-                @media (max-width: 768px) {{
-                    .price {{
-                        font-size: 2rem;
-                    }}
-                    .icon {{
-                        width: 56px;
-                        height: 56px;
-                    }}
-                }}
-            </style>
-        </head>
-        <body class="bg-light">
-            <div class="container text-center mt-5 px-3">
+        # --- HTML oluştur ---
+        html = render_template("index.html",
+                               altin_fiyat=altin_fiyat,
+                               dolar_fiyat=dolar_fiyat,
+                               sol_fiyat=sol_fiyat,
+                               ada_fiyat=ada_fiyat,
+                               xrp_fiyat=xrp_fiyat,
+                               simdi=simdi)
 
-                <div class="card shadow-lg rounded-4 mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/wc8SRjA.jpeg" alt="Altın" class="icon">
-                            <h1 class="price mb-0">{altin_fiyat} ₺</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-lg rounded-4 mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/FQCD10d.png" alt="Dolar" class="icon">
-                            <h1 class="price mb-0">{dolar_fiyat} ₺</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-lg rounded-4 mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/6bqao1V.png" alt="Ada" class="icon">
-                            <h1 class="price mb-0">{ada_fiyat} $</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-lg rounded-4 mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/awXKORw.png" alt="Sol" class="icon">
-                            <h1 class="price mb-0">{sol_fiyat} $</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card shadow-lg rounded-4 mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <img src="https://i.imgur.com/yiGgpo4.png" alt="Xrp" class="icon">
-                            <h1 class="price mb-0">{xrp_fiyat} $</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="text-muted mt-3">Güncelleme Zamanı: {simdi}</p>
-            </div>
-        </body>
-        </html>
-        """
-
-
-        # HTML dosyası oluştur
+        # HTML dosyasını kaydet
         local_filename = "index.html"
         remote_filename = "/mehmetmutlu.online/htdocs/index.html"
 
