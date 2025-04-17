@@ -7,56 +7,74 @@ app = Flask(__name__)
 
 @app.route("/altin-guncelle")
 def update_html():
+    # Token kontrolü
     token = request.args.get("token")
     if token != "gizli123":
         return "❌ Yetkisiz erişim"
 
     try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+
         # --- Altın verisi ---
         altin_url = "https://bigpara.hurriyet.com.tr/api/v1/chart/exchangegold/2199/1"
-        headers = {"User-Agent": "Mozilla/5.0"}
         altin_response = requests.get(altin_url, headers=headers)
         altin_data = altin_response.json()
-
-        if isinstance(altin_data, dict) and "data" in altin_data:
-            altin_listesi = altin_data["data"]
-        elif isinstance(altin_data, list):
-            altin_listesi = altin_data
-        else:
-            return "❌ Altın verisi formatı hatalı"
-
+        altin_listesi = altin_data["data"] if "data" in altin_data else altin_data
         altin_son = altin_listesi[-1]
-        altin_fiyat_raw = altin_son["acilis"]
-        altin_fiyat = str(int(float(altin_fiyat_raw)))  # Noktadan sonrası yok
+        altin_fiyat = int(float(altin_son["acilis"]))
 
         # --- Dolar verisi ---
         dolar_url = "https://bigpara.hurriyet.com.tr/api/v1/chart/exchangegold/1302/1"
         dolar_response = requests.get(dolar_url, headers=headers)
         dolar_data = dolar_response.json()
-
-        if isinstance(dolar_data, dict) and "data" in dolar_data:
-            dolar_listesi = dolar_data["data"]
-        elif isinstance(dolar_data, list):
-            dolar_listesi = dolar_data
-        else:
-            return "❌ Dolar verisi formatı hatalı"
-
+        dolar_listesi = dolar_data["data"] if "data" in dolar_data else dolar_data
         dolar_son = dolar_listesi[-1]
-        dolar_fiyat_raw = dolar_son["acilis"]
-        dolar_fiyat = f"{float(dolar_fiyat_raw):.2f}"  # Virgülden sonra 2 basamak
+        dolar_fiyat = round(float(dolar_son["acilis"]), 2)
 
-        # --- Türkiye saati (GMT+3) ---
+        '''
+        # --- SOL verisi (CoinMarketCap) ---
+        sol_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+        sol_params = {"symbol": "SOL", "convert": "USD"}
+        sol_headers = {
+            "Accepts": "application/json",
+            "X-CMC_PRO_API_KEY": "547c960c-9148-4e73-93dd-90eecc17cdcc"
+        }
+        sol_response = requests.get(sol_url, headers=sol_headers, params=sol_params)
+        sol_data = sol_response.json()
+        sol_fiyat = round(sol_data["data"]["SOL"]["quote"]["USD"]["price"], 2)
+        '''
+
+        crypto_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+        headers = {
+            "Accepts": "application/json",
+            "X-CMC_PRO_API_KEY": "547c960c-9148-4e73-93dd-90eecc17cdcc"
+        }
+
+        params = {
+            "symbol": "ADA,SOL,XRP",
+            "convert": "USD"
+        }
+
+        response = requests.get(crypto_url, headers=headers, params=params)
+        data = response.json()
+
+        ada_fiyat = round(data["data"]["ADA"]["quote"]["USD"]["price"], 2)
+        sol_fiyat = round(data["data"]["SOL"]["quote"]["USD"]["price"], 2)
+        xrp_fiyat = round(data["data"]["XRP"]["quote"]["USD"]["price"], 2)
+
+
+        # --- Güncelleme zamanı (GMT+3) ---
         turkiye_saati = datetime.now(timezone.utc) + timedelta(hours=3)
         simdi = turkiye_saati.strftime("%Y-%m-%d %H:%M:%S")
 
-        # --- HTML oluştur ---
+        # --- HTML ---
         html = f"""
         <!DOCTYPE html>
         <html lang="tr">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Altın ve Dolar Fiyatları</title>
+            <title>Memooooooo</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
             <style>
                 .icon {{
@@ -103,17 +121,44 @@ def update_html():
                     </div>
                 </div>
 
+                <div class="card shadow-lg rounded-4 mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <img src="https://i.imgur.com/awXKORw.png" alt="Sol" class="icon">
+                            <h1 class="price mb-0">{sol_fiyat} $</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-lg rounded-4 mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <img src="https://i.imgur.com/6bqao1V.png" alt="Ada" class="icon">
+                            <h1 class="price mb-0">{ada_fiyat} $</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-lg rounded-4 mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <img src="https://i.imgur.com/yiGgpo4.png" alt="Xrp" class="icon">
+                            <h1 class="price mb-0">{xrp_fiyat} $</h1>
+                        </div>
+                    </div>
+                </div>
+
                 <p class="text-muted mt-3">Güncelleme Zamanı: {simdi}</p>
             </div>
         </body>
         </html>
         """
 
-        # Dosya adları
+
+        # HTML dosyası oluştur
         local_filename = "index.html"
         remote_filename = "/mehmetmutlu.online/htdocs/index.html"
 
-        # HTML dosyasını yaz
         with open(local_filename, "w", encoding="utf-8") as file:
             file.write(html)
 
@@ -136,6 +181,5 @@ def update_html():
     except Exception as e:
         return f"❌ Hata oluştu: {e}"
 
-# Flask uygulamasını başlat
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
