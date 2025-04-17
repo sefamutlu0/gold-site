@@ -1,4 +1,3 @@
-'''
 from flask import Flask, request, render_template
 import requests
 from ftplib import FTP
@@ -92,4 +91,3 @@ def update_html():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
-'''    
