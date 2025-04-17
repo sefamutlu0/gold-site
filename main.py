@@ -52,7 +52,7 @@ def update_html():
 
         # --- Güncelleme zamanı (GMT+3) ---
         turkiye_saati = datetime.now(timezone.utc) + timedelta(hours=3)
-        simdi = turkiye_saati.strftime("%Y-%m-%d %H:%M:%S")
+        simdi = turkiye_saati.strftime("%d-%m-%Y %H:%M:%S")
 
         # --- HTML oluştur ---
         html = render_template("index.html",
