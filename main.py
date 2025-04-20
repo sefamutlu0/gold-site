@@ -65,7 +65,7 @@ def update_html():
 
         # HTML dosyasını kaydet
         local_filename = "index.html"
-        remote_filename = "/mehmetmutlu.online/htdocs/index.html"
+        remote_filename = "/htdocs/index.html"
 
         with open(local_filename, "w", encoding="utf-8") as file:
             file.write(html)
