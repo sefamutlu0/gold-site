@@ -81,6 +81,10 @@
       if (localStorage.getItem("textTheme") === "blue") {
         document.body.classList.add("text-blue");
       }
+      // Sayfa 3 dakikada bir yenilensin
+      setTimeout(function () {
+        location.reload();
+      }, 180000); // 180000 ms = 3 dakika
     };
   </script>
 </body>
