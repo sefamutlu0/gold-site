@@ -36,12 +36,21 @@ body {
 .card:hover {
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-  
-.card-icon img {
-    width: 40px;
-    height: 40px;
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-  
+
+.card-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .card-price {
     font-size: 24px;
     font-weight: 600;
