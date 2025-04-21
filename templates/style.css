@@ -1,71 +1,118 @@
+:root {
+    --main-color: #0d6efd;
+    --bg-color: #ffffff;
+    --text-color: #1c1c1e;
+    --border-color: #e5e5e5;
+    --muted-text: #6c757d;
+    --card-radius: 12px;
+    --hover-shadow: rgba(13, 110, 253, 0.1);
+}
+  
 body {
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #1c1c1e;
+    color: var(--text-color);
+}
+  
+body.text-blue {
+    --text-color: var(--main-color);
 }
   
 .navbar {
-    background-color: #ffffff;
-    border-bottom: 1px solid #e5e5e5;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
 }
   
 .navbar-nav {
-    gap: 30px; /* Daha fazla boşluk */
+    gap: 30px;
 }
   
 .nav-link {
-    color: #1c1c1e;
+    color: var(--text-color);
+    background-color: transparent;
     font-weight: 500;
-    padding: 10px 20px;
+    padding: 8px 20px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: center;
 }
   
 .nav-link:hover {
-    background-color: #f1f1f1;
-    border-radius: 8px;
-    color: #0a58ca;
+    background-color: var(--text-color);
+    color: #fff;
 }
   
 .card {
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     transition: box-shadow 0.3s;
 }
   
 .card:hover {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px var(--hover-shadow);
 }
-
+  
 .card-icon {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
+  
 .card-icon img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
-
+  
 .card-price {
     font-size: 24px;
     font-weight: 600;
+    color: var(--text-color);
+}
+  
+.section-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-color);
+    border-left: 4px solid var(--text-color);
+    padding-left: 12px;
 }
   
 .update-time {
     font-size: 14px;
-    color: #6c757d;
+    color: var(--muted-text);
     text-align: center;
     margin-top: 40px;
 }
   
-.section-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #343a40;
+/* Tema Butonu */
+.btn-theme-toggle {
+    background-color: var(--text-color);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+  
+.btn-theme-toggle:hover {
+    filter: brightness(0.9);
+    transform: scale(1.05);
+}
+
+.theme-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
