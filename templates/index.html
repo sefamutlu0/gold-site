@@ -9,18 +9,19 @@
   <link rel="stylesheet" href="style.css?v={{ simdi }}"/>
 </head>
 <body>
-  <!-- Navbar -->
+
+    <!-- Navbar -->
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <ul class="navbar-nav mx-auto flex-row">
         <li class="nav-item">
-          <a class="nav-link" href="#">Madenler</a>
+          <a class="nav-link" href="#" onclick="toggleCategory('doviz')">Dövizler</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Dövizler</a>
+          <a class="nav-link" href="#" onclick="toggleCategory('kripto')">Kriptolar</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Kriptolar</a>
+          <a class="nav-link" href="#" onclick="toggleCategory('borsa')">Borsalar</a>
         </li>
       </ul>
     </div>
@@ -28,39 +29,39 @@
 
   <!-- Cards -->
   <div class="container py-5">
-    <div class="section-title">Kripto Fiyatları</div>
+    <div class="section-title" id="sectionTitle">Piyasalar</div>
     <div class="row gy-3">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="doviz">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/altin.png" alt="icon"></div>
           <div class="card-price">{{ altin_fiyat }} ₺</div>
         </div>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="doviz">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/dolar.png" alt="icon"></div>
           <div class="card-price">{{ dolar_fiyat }} ₺</div>
         </div>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="kripto">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/sol.png" alt="icon"></div>
           <div class="card-price">{{ sol_fiyat }} $</div>
         </div>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="kripto">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/ada.png" alt="icon"></div>
           <div class="card-price">{{ ada_fiyat }} $</div>
         </div>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="kripto">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/xrp.png" alt="icon"></div>
           <div class="card-price">{{ xrp_fiyat }} $</div>
         </div>
       </div>
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-6 card-item" data-category="borsa">
         <div class="card d-flex flex-row align-items-center justify-content-between">
           <div class="card-icon"><img src="/vbtyz.png" alt="icon"></div>
           <div class="card-price">{{ vbtyz_fiyat }} ₺</div>
@@ -70,28 +71,54 @@
 
     <div class="update-time">Güncelleme Zamanı: {{ simdi }}</div>
 
-    <!-- Tema Butonu (sayfa sonu) -->
     <div class="theme-toggle-wrapper">
       <button class="btn-theme-toggle" onclick="toggleTheme()">🎨 Tema Değiştir</button>
     </div>
   </div>
 
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    let currentCategory = null;
+  
+    function toggleCategory(category) {
+      const cards = document.querySelectorAll(".card-item");
+      const title = document.getElementById("sectionTitle");
+  
+      if (currentCategory === category) {
+        // Tüm kartları göster
+        cards.forEach(card => card.style.display = "block");
+        title.textContent = "Piyasalar";
+        currentCategory = null;
+      } else {
+        // Sadece seçilen kategori göster
+        cards.forEach(card => {
+          const cat = card.getAttribute("data-category");
+          card.style.display = (cat === category) ? "block" : "none";
+        });
+  
+        // Başlık güncelle
+        if (category === "doviz") title.textContent = "Döviz Fiyatları";
+        else if (category === "kripto") title.textContent = "Kripto Fiyatları";
+        else if (category === "borsa") title.textContent = "Borsa Fiyatları";
+  
+        currentCategory = category;
+      }
+    }
+  
     function toggleTheme() {
       document.body.classList.toggle("text-blue");
       localStorage.setItem("textTheme", document.body.classList.contains("text-blue") ? "blue" : "black");
     }
-
+  
     window.onload = function () {
       if (localStorage.getItem("textTheme") === "blue") {
         document.body.classList.add("text-blue");
       }
-      // Sayfa 3 dakikada bir yenilensin
-      setTimeout(function () {
-        location.reload();
-      }, 180000); // 180000 ms = 3 dakika
+      setTimeout(() => location.reload(), 180000);
     };
   </script>
+  
+  
 </body>
 </html>
