@@ -44,11 +44,21 @@ def update_html():
         }
 
         response = requests.get(crypto_url, headers=headers, params=params)
+        crypto_data = response.json()
+
+        ada_fiyat = round(crypto_data["data"]["ADA"]["quote"]["USD"]["price"], 2)
+        sol_fiyat = round(crypto_data["data"]["SOL"]["quote"]["USD"]["price"], 2)
+        xrp_fiyat = round(crypto_data["data"]["XRP"]["quote"]["USD"]["price"], 2)
+
+        
+        vbtyz_url = "https://www.isyatirim.com.tr/_layouts/15/Isyatirim.Website/Common/Data.aspx/OneEndeks?endeks=VBTYZ"
+        response = requests.get(vbtyz_url)
+
+        # JSON verisini parse et
         data = response.json()
 
-        ada_fiyat = round(data["data"]["ADA"]["quote"]["USD"]["price"], 2)
-        sol_fiyat = round(data["data"]["SOL"]["quote"]["USD"]["price"], 2)
-        xrp_fiyat = round(data["data"]["XRP"]["quote"]["USD"]["price"], 2)
+        # "last" değerini çek
+        vbtyz_fiyat = data[0]["last"]
 
         # --- Güncelleme zamanı (GMT+3) ---
         turkiye_saati = datetime.now(timezone.utc) + timedelta(hours=3)
@@ -61,11 +71,12 @@ def update_html():
                                sol_fiyat=sol_fiyat,
                                ada_fiyat=ada_fiyat,
                                xrp_fiyat=xrp_fiyat,
+                               vbtyz_fiyat=vbtyz_fiyat,
                                simdi=simdi)
 
         # HTML dosyasını kaydet
         local_filename = "index.html"
-        remote_filename = "/htdocs/index.html"
+        remote_filename = "/sefamutlu.site/htdocs/index.html"
 
         with open(local_filename, "w", encoding="utf-8") as file:
             file.write(html)
