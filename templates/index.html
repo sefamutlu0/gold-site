@@ -79,44 +79,65 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let currentCategory = null;
-  
-    function toggleCategory(category) {
-      const cards = document.querySelectorAll(".card-item");
-      const title = document.getElementById("sectionTitle");
-  
-      if (currentCategory === category) {
-        // Tüm kartları göster
-        cards.forEach(card => card.style.display = "block");
-        title.textContent = "Piyasalar";
-        currentCategory = null;
-      } else {
-        // Sadece seçilen kategori göster
-        cards.forEach(card => {
-          const cat = card.getAttribute("data-category");
-          card.style.display = (cat === category) ? "block" : "none";
-        });
-  
-        // Başlık güncelle
-        if (category === "doviz") title.textContent = "Döviz Fiyatları";
-        else if (category === "kripto") title.textContent = "Kripto Fiyatları";
-        else if (category === "borsa") title.textContent = "Borsa Fiyatları";
-  
-        currentCategory = category;
-      }
+  let currentCategory = null;
+  let lastUpdate = null; // değişim kontrolü için
+
+  function toggleCategory(category) {
+    const cards = document.querySelectorAll(".card-item");
+    const title = document.getElementById("sectionTitle");
+
+    if (currentCategory === category) {
+      // Tüm kartları göster
+      cards.forEach(card => card.style.display = "block");
+      title.textContent = "Piyasalar";
+      currentCategory = null;
+    } else {
+      // Sadece seçilen kategori göster
+      cards.forEach(card => {
+        const cat = card.getAttribute("data-category");
+        card.style.display = (cat === category) ? "block" : "none";
+      });
+
+      // Başlık güncelle
+      if (category === "doviz") title.textContent = "Döviz Fiyatları";
+      else if (category === "kripto") title.textContent = "Kripto Fiyatları";
+      else if (category === "borsa") title.textContent = "Borsa Fiyatları";
+
+      currentCategory = category;
     }
-  
-    function toggleTheme() {
-      document.body.classList.toggle("text-blue");
-      localStorage.setItem("textTheme", document.body.classList.contains("text-blue") ? "blue" : "black");
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle("text-blue");
+    localStorage.setItem("textTheme", document.body.classList.contains("text-blue") ? "blue" : "black");
+  }
+
+  function checkForUpdates() {
+    fetch('index.html', { method: 'HEAD', cache: 'no-store' })
+      .then(response => {
+        const newUpdate = response.headers.get('last-modified');
+        if (!lastUpdate) {
+          lastUpdate = newUpdate;
+        } else if (lastUpdate !== newUpdate) {
+          console.log("Yeni güncelleme tespit edildi, sayfa yenileniyor...");
+          location.reload();
+        }
+      })
+      .catch(error => console.error("Güncelleme kontrol hatası:", error));
+  }
+
+  window.onload = function () {
+    // Tema ayarla
+    if (localStorage.getItem("textTheme") === "blue") {
+      document.body.classList.add("text-blue");
     }
-  
-    window.onload = function () {
-      if (localStorage.getItem("textTheme") === "blue") {
-        document.body.classList.add("text-blue");
-      }
-      setTimeout(() => location.reload(), 180000);
-    };
+
+    // 3 dakika sonra bir kere sayfayı yenile (senin eski yöntem)
+    setTimeout(() => location.reload(), 180000);
+
+    // Ekstra: her 1 dakikada bir dosya güncellenmiş mi kontrol et
+    setInterval(checkForUpdates, 60000);
+  };
   </script>
   
   
